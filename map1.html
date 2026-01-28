@@ -1,217 +1,209 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <title>US COVID-19 Rates Map</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
+<meta charset="utf-8">
+<title>US COVID-19 Rates Map</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+<style>
+body {
+margin: 0;
+padding: 0;
         }
-
-        h2,
-        h3 {
-            margin: 10px;
-            font-size: 18px;
+h2,
+h3 {
+margin: 10px;
+font-size: 18px;
         }
-
-        h3 {
-            font-size: 16px;
+h3 {
+font-size: 16px;
         }
-
-        p {
-            margin: 10px;
+p {
+margin: 10px;
         }
-
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
+#map {
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+width: 100%;
         }
-
-        /* Map title */
-        #title {
-            position: absolute;
-            top: 0;
-            left: 0;
-            margin-top: 20px;
-            margin-left: 20px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 25pt;
-            color: white;
-            z-index: 1;
+/* Map title */
+#title {
+position: absolute;
+top: 0;
+left: 0;
+margin-top: 20px;
+margin-left: 20px;
+font-family: 'Open Sans', sans-serif;
+font-size: 25pt;
+color: white;
+z-index: 1;
         }
-
-        /* Map subtitle */
-        #subtitle {
-            position: absolute;
-            top: 0;
-            left: 0;
-            margin-top: 70px;
-            margin-left: 20px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 15pt;
-            color: white;
-            z-index: 1;
+/* Map subtitle */
+#subtitle {
+position: absolute;
+top: 0;
+left: 0;
+margin-top: 70px;
+margin-left: 20px;
+font-family: 'Open Sans', sans-serif;
+font-size: 15pt;
+color: white;
+z-index: 1;
         }
-
-        .map-overlay {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.8);
-            border-style: solid;
-            border-width: 1px;
-            border-color: rgba(0, 0, 0, 0.2);
-            margin-right: 20px;
-            font-family: 'Open Sans', sans-serif;
-            overflow: auto;
-            border-radius: 3px;
+.map-overlay {
+position: absolute;
+bottom: 0;
+right: 0;
+background: rgba(255, 255, 255, 0.8);
+border-style: solid;
+border-width: 1px;
+border-color: rgba(0, 0, 0, 0.2);
+margin-right: 20px;
+font-family: 'Open Sans', sans-serif;
+overflow: auto;
+border-radius: 3px;
         }
-
-        #legend {
-            padding: 10px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            line-height: 18px;
-            margin-bottom: 40px;
-            width: 160px;
+#legend {
+padding: 10px;
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+line-height: 18px;
+margin-bottom: 40px;
+width: 160px;
         }
-
-        .legend-key {
-            display: inline-block;
-            border-radius: 20%;
-            width: 10px;
-            height: 10px;
-            margin-right: 5px;
+.legend-key {
+display: inline-block;
+border-radius: 20%;
+width: 10px;
+height: 10px;
+margin-right: 5px;
         }
-
-        .mapboxgl-canvas-container.mapboxgl-interactive,
-        .mapboxgl-ctrl-group button.mapboxgl-ctrl-compass {
-            cursor: unset;
+.mapboxgl-canvas-container.mapboxgl-interactive,
+.mapboxgl-ctrl-group button.mapboxgl-ctrl-compass {
+cursor: unset;
         }
-
-        a {
-            color: black;
+a {
+color: black;
         }
-    </style>
+</style>
 </head>
-
 <body>
-    <div id="map"></div>
-    <div id="title">
+<div id="map"></div>
+<div id="title">
         COVID-19 Rates in the US
-    </div>
-    <div id="subtitle">
+</div>
+<div id="subtitle">
         Cases per Thousand Residents (2020)
-    </div>
-    <div class='map-overlay' id='legend'></div>
-
-    <script>
-        // Mapbox access token
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamRlbmcxMzciLCJhIjoiY21oY3BwdGxtMW93bDJsb282bnl6bWl0NSJ9.t19u2LlOUGTPHQ7N82CpkA';
-
-        // Initialize the map
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/dark-v10', // dark basemap
-            zoom: 4,
-            center: [-96, 37.5], // center on US
-            projection: 'albers' // Albers projection as required
+</div>
+<div class='map-overlay' id='legend'></div>
+<script>
+// Mapbox access token
+mapboxgl.accessToken = 'pk.eyJ1IjoiamRlbmcxMzciLCJhIjoiY21oY3BwdGxtMW93bDJsb282bnl6bWl0NSJ9.t19u2LlOUGTPHQ7N82CpkA';
+// Initialize the map
+const map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/dark-v10', // dark basemap
+zoom: 4,
+center: [-96, 37.5], // center on US
+projection: 'albers' // Albers projection as required
         });
-
-        // Fetch GeoJSON data and load map
-        async function geojsonFetch() {
-            let response = await fetch('assets/us-covid-2020-rates.json');
-            let covidData = await response.json();
-
-            map.on('load', function loadingData() {
-                // Add data source
-                map.addSource('covidData', {
-                    type: 'geojson',
-                    data: covidData
+// Fetch GeoJSON data and load map
+async function geojsonFetch() {
+let response = await fetch('assets/us-covid-2020-rates.json');
+let covidData = await response.json();
+map.on('load', function loadingData() {
+// Add data source
+map.addSource('covidData', {
+type: 'geojson',
+data: covidData
                 });
-
-                // Add choropleth layer
-                map.addLayer({
-                    'id': 'covidData-layer',
-                    'type': 'fill',
-                    'source': 'covidData',
-                    'paint': {
-                        'fill-color': [
-                            'step',
-                            ['get', 'rates'], // Make sure 'rates' matches your GeoJSON property name
-                            '#FFEDA0',   // 0-19
-                            20, '#FED976',   // 20-39
-                            40, '#FEB24C',   // 40-59
-                            60, '#FD8D3C',   // 60-79
-                            80, '#FC4E2A',   // 80-99
-                            100, '#E31A1C',  // 100-119
-                            120, '#BD0026',  // 120-139
-                            140, '#800026'   // 140+
-                        ],
-                        'fill-outline-color': '#BBBBBB',
-                        'fill-opacity': 0.7,
+// Add choropleth layer BEFORE the first label layer
+// This ensures labels render on top
+const layers = map.getStyle().layers;
+// Find the index of the first symbol layer in the map style
+let firstSymbolId;
+for (let i = 0; i < layers.length; i++) {
+if (layers[i].type === 'symbol') {
+firstSymbolId = layers[i].id;
+break;
                     }
-                });
-
-                // Create legend
-                const layers = [
-                    '0-19',
-                    '20-39',
-                    '40-59',
-                    '60-79',
-                    '80-99',
-                    '100-119',
-                    '120-139',
-                    '140+'
+                }
+map.addLayer({
+'id': 'covidData-layer',
+'type': 'fill',
+'source': 'covidData',
+'paint': {
+'fill-color': [
+'step',
+                            ['get', 'rates'],
+'#FFEDA0',   // 0-19
+20, '#FED976',   // 20-39
+40, '#FEB24C',   // 40-59
+60, '#FD8D3C',   // 60-79
+80, '#FC4E2A',   // 80-99
+100, '#E31A1C',  // 100-149
+150, '#BD0026',  // 150-199
+200, '#8B0000',  // 200-249
+250, '#600000',  // 250-299
+300, '#400000'   // 300+
+                        ],
+'fill-outline-color': '#BBBBBB',
+'fill-opacity': 0.7,
+                    }
+                }, firstSymbolId); // Add layer before the first symbol layer
+// Create legend
+const legendLayers = [
+'0-19',
+'20-39',
+'40-59',
+'60-79',
+'80-99',
+'100-149',
+'150-199',
+'200-249',
+'250-299',
+'300+'
                 ];
-                const colors = [
-                    '#FFEDA070',
-                    '#FED97670',
-                    '#FEB24C70',
-                    '#FD8D3C70',
-                    '#FC4E2A70',
-                    '#E31A1C70',
-                    '#BD002670',
-                    '#80002670'
+const colors = [
+'#FFEDA070',
+'#FED97670',
+'#FEB24C70',
+'#FD8D3C70',
+'#FC4E2A70',
+'#E31A1C70',
+'#BD002670',
+'#8B000070',
+'#60000070',
+'#40000070'
                 ];
-
-                const legend = document.getElementById('legend');
-                legend.innerHTML = "<b>COVID-19 Case Rate<br>(cases per 1,000 people)</b><br><br>";
-
-                layers.forEach((layer, i) => {
-                    const color = colors[i];
-                    const item = document.createElement('div');
-                    const key = document.createElement('span');
-                    key.className = 'legend-key';
-                    key.style.backgroundColor = color;
-
-                    const value = document.createElement('span');
-                    value.innerHTML = `${layer}`;
-                    item.appendChild(key);
-                    item.appendChild(value);
-                    legend.appendChild(item);
+const legend = document.getElementById('legend');
+legend.innerHTML = "<b>COVID-19 Case Rate<br>(cases per 1,000 people)</b><br><br>";
+legendLayers.forEach((layer, i) => {
+const color = colors[i];
+const item = document.createElement('div');
+const key = document.createElement('span');
+key.className = 'legend-key';
+key.style.backgroundColor = color;
+const value = document.createElement('span');
+value.innerHTML = `${layer}`;
+item.appendChild(key);
+item.appendChild(value);
+legend.appendChild(item);
                 });
-
-                // Add source attribution
-                const source = document.createElement('p');
-                source.innerHTML = '<br>Source: <a href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html" target="_blank">NYT</a>, <a href="https://www.census.gov/" target="_blank">US Census</a>';
-                source.style.fontSize = '10pt';
-                source.style.textAlign = 'right';
-                legend.appendChild(source);
-
-                // Click event to show popup
-                map.on('click', 'covidData-layer', (e) => {
-                    const properties = e.features[0].properties;
-                    new mapboxgl.Popup()
+// Add source attribution
+const source = document.createElement('p');
+source.innerHTML = '<br>Source: <a href="https://data.census.gov/cedsci/table?g=0100000US.050000&d=ACS%205-Year%20Estimates%20Data%20Profiles&tid=ACSDP5Y2018.DP05&hidePreview=true" target="_blank">US Census</a>';
+source.style.fontSize = '10pt';
+source.style.textAlign = 'right';
+legend.appendChild(source);
+// Click event to show popup
+map.on('click', 'covidData-layer', (e) => {
+const properties = e.features[0].properties;
+new mapboxgl.Popup()
                         .setLngLat(e.lngLat)
                         .setHTML(`
                             <strong>${properties.county}, ${properties.state}</strong><br>
@@ -220,22 +212,17 @@
                         `)
                         .addTo(map);
                 });
-
-                // Change cursor on hover
-                map.on('mouseenter', 'covidData-layer', () => {
-                    map.getCanvas().style.cursor = 'pointer';
+// Change cursor on hover
+map.on('mouseenter', 'covidData-layer', () => {
+map.getCanvas().style.cursor = 'pointer';
                 });
-
-                map.on('mouseleave', 'covidData-layer', () => {
-                    map.getCanvas().style.cursor = '';
+map.on('mouseleave', 'covidData-layer', () => {
+map.getCanvas().style.cursor = '';
                 });
             });
         }
-
-        // Call the function to load data
-        geojsonFetch();
-
-    </script>
+// Call the function to load data
+geojsonFetch();
+</script>
 </body>
-
 </html>
