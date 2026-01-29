@@ -1,11 +1,11 @@
 # US COVID-19 Mapping Project
 
-## Project Overview
-This project presents two interactive web maps visualizing COVID-19 data across the United States at the county level for the year 2020. The maps provide different perspectives on the pandemic's impact: one showing case rates per thousand residents (choropleth map) and another displaying total case counts (proportional symbol map).
+## Introduction
+This project visualizes COVID-19 data across the United States at the county level for 2020 through two interactive web maps. Map 1 is a choropleth map showing case rates per thousand residents, while Map 2 is a proportional symbol map displaying total case counts. Both maps allow users to explore the geographic distribution and impact of COVID-19 across different counties.
 
 ## Map Links
 - **Choropleth Map (COVID-19 Rates):** [https://jdeng137.github.io/us_covid_data_viz/map1.html](https://jdeng137.github.io/us_covid_data_viz/map1.html)
-- **Proportional Symbol Map (COVID-19 Cases):** [https://jdeng137.github.io/us_covid_data_viz/map2.html](https://jdeng137.github.io/us_covid_data_viz/map2.html)
+- **Proportional Symbol Map (COVID-19 Cases):** [https://jdeng137.github.io/us_covid_data_viz/map2.html](https://jdeng137.github.io/us_covid_data_viz/map2.html)html)
 
 ## Screenshots
 
@@ -19,94 +19,49 @@ This project presents two interactive web maps visualizing COVID-19 data across 
 
 ## Primary Functions
 
-### Map 1 - Choropleth Map Features:
-- **Color-coded counties** based on COVID-19 case rates (cases per 1,000 people)
-- **10-tier classification system** ranging from 0-19 to 300+ cases per thousand
-- **Interactive popups** displaying county name, state, case rate, and total cases when clicking on a county
-- **Custom legend** with graduated color scheme from light yellow to dark red
-- **Layer ordering** ensuring city/place labels render on top of the data layer for better readability
+**Map 1 (Choropleth Map):**
+- Color-coded counties based on case rates (cases per 1,000 people)
+- 10-class color scheme from light yellow (0-19) to dark red (300+)
+- Interactive popups showing county name, state, case rate, and total cases
+- Click on any county to view detailed information
 
-### Map 2 - Proportional Symbol Map Features:
-- **Graduated circle symbols** sized proportionally to total COVID-19 case counts
-- **7 size classes** ranging from 1,000 to 300,000+ cases
-- **Color gradation** with darker blues indicating higher case counts
-- **Interactive popups** showing detailed county information and case numbers on click
-- **Hover effects** changing cursor to pointer when over clickable circles
-- **Optimized symbol placement** ensuring labels remain visible above data points
+**Map 2 (Proportional Symbol Map):**
+- Graduated circles sized by total COVID-19 cases
+- 7 size classes ranging from 1,000 to 300,000+ cases
+- Color gradient with darker blues for higher case counts
+- Click on circles to view county details
+- Hover effect with pointer cursor
 
-### Advanced Features Not Covered in Lectures:
-1. **Symbol layer ordering** - Implementation of code to find and insert data layers before the first symbol layer in the basemap, ensuring labels appear on top:
+**Advanced Function (Not Covered in Lectures):**
+
+Both maps implement **layer ordering** to ensure city and place labels appear on top of the data layers. This was achieved by finding the first symbol layer in the basemap and inserting the COVID data layer before it:
 ```javascript
-   const layers = map.getStyle().layers;
-   let firstSymbolId;
-   for (let i = 0; i < layers.length; i++) {
-       if (layers[i].type === 'symbol') {
-           firstSymbolId = layers[i].id;
-           break;
-       }
-   }
-   map.addLayer({...}, firstSymbolId);
+const layers = map.getStyle().layers;
+let firstSymbolId;
+for (let i = 0; i < layers.length; i++) {
+    if (layers[i].type === 'symbol') {
+        firstSymbolId = layers[i].id;
+        break;
+    }
+}
+map.addLayer({...}, firstSymbolId);
 ```
 
-2. **Extended classification ranges** - Custom implementation of expanded data ranges (up to 300+) to better represent outlier counties with extremely high case rates
+This ensures that place names remain visible and readable on top of the colored counties and proportional symbols.
 
-## Libraries and Technologies Used
-- **Mapbox GL JS v2.8.1** - Interactive map rendering and visualization
-- **HTML5/CSS3** - Structure and styling
-- **JavaScript (ES6)** - Map functionality and interactivity
-- **Google Fonts (Open Sans)** - Typography
-
-## Map Specifications
-- **Projection:** Albers USA
-- **Center:** [-96, 37.5] (Centered on continental US)
-- **Zoom Level:** 4
-- **Basemap:** Mapbox Dark (dark-v10)
+## Libraries in Use
+- **Mapbox GL JS (v2.8.1)** - For interactive map rendering and visualization
+- **Google Fonts** - For typography usage
 
 ## Data Sources
-- **COVID-19 Case Data:** [The New York Times COVID-19 Data](https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html)
-  - Includes all cases reported in 2020 at the county level
-- **Population Data:** [US Census Bureau, 2018 ACS 5-Year Estimates](https://data.census.gov/cedsci/table?g=0100000US.050000&d=ACS%205-Year%20Estimates%20Data%20Profiles&tid=ACSDP5Y2018.DP05)
-  - Used to calculate case rates per 1,000 residents
+- **COVID-19 Data:** [The New York Times](https://github.com/nytimes/covid-19-data/blob/43d32dde2f87bd4dafbb7d23f5d9e878124018b8/live/us-counties.csv) - County-level COVID-19 cases for 2020
+- **Population Data:** [US Census Bureau, 2018 ACS 5-Year Estimates](https://data.census.gov/cedsci/table?g=0100000US.050000&d=ACS%205-Year%20Estimates%20Data%20Profiles&tid=ACSDP5Y2018.DP05&hidePreview=true) - Used to calculate case rates
 - **County Boundaries:** US Census Bureau
-  - Simplified using Mapshaper for optimal web performance
-
-## Data Processing
-The GeoJSON data files were processed to:
-- Use Albers USA projection for accurate US mapping
-- Remove unnecessary attributes to reduce file size
-- Simplify geometric shapes using Mapshaper for faster loading
-- Calculate case rates as cases per thousand residents
-
-## Project Structure
-```
-us-covid-2020-maps/
-│
-├── map1.html                          # Choropleth map
-├── map2.html                          # Proportional symbol map
-├── README.md                          # Project documentation
-│
-├── assets/
-│   ├── us-covid-2020-rates.json      # County-level case rates data
-│   └── us-covid-2020-counts.json     # County-level case counts data
-│
-├── css/
-│   └── style.css                      # Custom styling (if separated)
-│
-├── img/
-│   ├── map1-screenshot.png           # Screenshot of choropleth map
-│   └── map2-screenshot.png           # Screenshot of proportional symbol map
-│
-└── js/
-    └── main.js                        # JavaScript functionality (if separated)
-```
 
 ## Acknowledgments
-- Lab designed by Professor Bo Zhao, University of Washington
-- COVID-19 data processing by Steven Bao
-- Course: GEOG 458 - Advanced Digital Geographies
+- Map design and lab materials provided by Professor Bo Zhao, University of Washington
+- Data processing assistance by Steven Bao
+- Created for GEOG 458: Advanced Digital Geographies
 
-## Author
-Jiali Deng
-
-## License
-This project was created for educational purposes as part of GEOG 458 at the University of Washington.
+## AI Disclosure
+I used AI (Claude) in this assignment for debugging, code optimization, and implementing the layer ordering feature to ensure labels appear on top of data layers. AI assistance was also used for adjusting legend breakpoints and troubleshooting Git repository issues. I did not use AI to write or complete any core mapping components, and I am able to explain all code implementations and design decisions in the project.
