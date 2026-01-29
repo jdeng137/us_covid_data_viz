@@ -64,4 +64,4 @@ This ensures that place names remain visible and readable on top of the colored 
 - Created for GEOG 458: Advanced Digital Geographies
 
 ## AI Disclosure
-I used AI (Claude) in this assignment for debugging, code optimization, and implementing the layer ordering feature to ensure labels appear on top of data layers. AI assistance was also used for adjusting legend breakpoints and troubleshooting Git repository issues. I did not use AI to write or complete any core mapping components, and I am able to explain all code implementations and design decisions in the project.
+I used AI (GitHub Copilot) in this assignment for debugging, code optimization, and implementing the layer ordering feature to ensure labels appear on top of data layers. AI assistance was also used for adjusting legend breakpoints and troubleshooting Git repository issues. I did not use AI to write or complete any core mapping components, and I am able to explain all code implementations and design decisions in the project.
