@@ -4,8 +4,8 @@
 This project presents two interactive web maps visualizing COVID-19 data across the United States at the county level for the year 2020. The maps provide different perspectives on the pandemic's impact: one showing case rates per thousand residents (choropleth map) and another displaying total case counts (proportional symbol map).
 
 ## Map Links
-- **Choropleth Map (COVID-19 Rates):** [https://jdeng137.github.io/us-covid-2020-maps/map1.html](https://jdeng137.github.io/us-covid-2020-maps/map1.html)
-- **Proportional Symbol Map (COVID-19 Cases):** [https://jdeng137.github.io/us-covid-2020-maps/map2.html](https://jdeng137.github.io/us-covid-2020-maps/map2.html)
+- **Choropleth Map (COVID-19 Rates):** [https://jdeng137.github.io/us_covid_data_viz/map1.html](https://jdeng137.github.io/us_covid_data_viz/map1.html)
+- **Proportional Symbol Map (COVID-19 Cases):** [https://jdeng137.github.io/us_covid_data_viz/map2.html](https://jdeng137.github.io/us_covid_data_viz/map2.html)
 
 ## Screenshots
 
