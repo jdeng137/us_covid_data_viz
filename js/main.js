@@ -23,7 +23,17 @@ map.addSource('covidCases', {
     data: 'assets/us-covid-2020-counts.json'
 });
 
-// Add layer with proportional symbols
+// Find the index of the first symbol layer in the map style
+const layers = map.getStyle().layers;
+let firstSymbolId;
+for (let i = 0; i < layers.length; i++) {
+    if (layers[i].type === 'symbol') {
+        firstSymbolId = layers[i].id;
+        break;
+    }
+}
+
+// Add layer with proportional symbols BEFORE the first symbol layer
 map.addLayer({
     'id': 'covidCases-point',
     'type': 'circle',
@@ -59,7 +69,7 @@ map.addLayer({
         'circle-stroke-width': 1,
         'circle-opacity': 0.6
     }
-});
+}, firstSymbolId); // Add layer before the first symbol layer
 
 // Click on circle to view case count in a popup
 map.on('click', 'covidCases-point', (event) => {
@@ -107,7 +117,7 @@ labels.push(
 
 // Add the data source
 const source =
-'<p style="text-align: right; font-size:10pt">Source: <a href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html" target="_blank">NYT</a></p>';
+'<p style="text-align: right; font-size:10pt">Source: <a href="https://github.com/nytimes/covid-19-data/blob/43d32dde2f87bd4dafbb7d23f5d9e878124018b8/live/us-counties.csv" target="_blank">NY Times</a></p>';
 
 // Combine all the html codes
 legend.innerHTML = labels.join('') + source;
