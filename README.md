@@ -10,11 +10,11 @@ This project presents two interactive web maps visualizing COVID-19 data across 
 ## Screenshots
 
 ### Map 1: COVID-19 Case Rates (Choropleth Map)
-![COVID-19 Rates Map](img/map1-screenshot.png)
+![COVID-19 Rates Map](img/map1.png)
 *This choropleth map displays COVID-19 case rates per 1,000 residents across US counties, with darker red colors indicating higher infection rates.*
 
 ### Map 2: COVID-19 Total Cases (Proportional Symbol Map)
-![COVID-19 Cases Map](img/map2-screenshot.png)
+![COVID-19 Cases Map](img/map2.png)
 *This proportional symbol map uses graduated circles to represent total COVID-19 cases by county, with larger circles indicating more cases.*
 
 ## Primary Functions
